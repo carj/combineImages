@@ -150,6 +150,10 @@ if __name__ == '__main__':
     source = client.folder(source_material_folder)
     print(f"Looking for Content in {client.folder(source.parent).title} / {source.title}")
 
+    # how many folders of source files
+    metadata_fields = {"xip.parent_ref": source_material_folder, "xip.document_type": "SO"}
+    source_records: int = search.search_index_filter_hits(query="%", filter_values=metadata_fields)
+
     security_tag = config['credentials']['security.tag']
 
     parent_folder = config['credentials']['target_folder']
@@ -165,7 +169,6 @@ if __name__ == '__main__':
     db_name = os.path.basename(csv_file).replace(".csv", ".json")
 
     db = TinyDB(db_name)
-
 
     sha1 = FileHash(hashlib.sha1)
 
@@ -231,9 +234,11 @@ if __name__ == '__main__':
                                 continue
                             main(client, record_folder, dublin_core_data, security_tag)
 
-            print(f"Completed Ingests")
-            print(f"Re-start the script again to find any missing ingests")
+            print(f"Script Finished")
+            print(f"Number of folders containing images: {source_records}")
             print(f"Confirmed ingested {len(db)}")
+            print(f"*** The two values above should be equal ***")
+            print(f"Re-start the script again to find any missing ingests")
             print(f"Items in spreadsheet but no data found ingested {len(db_missing)}")
             print(f"Rows in spreadsheet {spreadsheet_rows}")
             exit(1)
