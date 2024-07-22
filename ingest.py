@@ -237,7 +237,6 @@ if __name__ == '__main__':
             print(f"Script Finished")
             print(f"Number of folders containing images: {source_records}")
             print(f"Confirmed ingested {len(db)}")
-            print(f"*** The two values above should be equal ***")
             print(f"Re-start the script again to find any missing ingests")
             print(f"Items in spreadsheet but no data found ingested {len(db_missing)}")
             print(f"Rows in spreadsheet {spreadsheet_rows}")
