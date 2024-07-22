@@ -111,7 +111,7 @@ def main(client: EntityAPI, record_folder: Folder, dublin_core_data: DC, securit
         i = Image.open(f"./{tiff}")
         images.append(i)
 
-    pdf_path = os.path.join(f"./{folder_name}", "output.pdf")
+    pdf_path = os.path.join(f"./{folder_name}", f"{dublin_core_data.title}.pdf")
 
     dc_tree.write(open(os.path.join(f"./{folder_name}", 'dublin.xml'), mode='wb'), encoding='utf-8')
 
