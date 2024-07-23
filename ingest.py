@@ -61,7 +61,7 @@ def main(client: EntityAPI, record_folder: Folder, dublin_core_data: DC, securit
     while workflow_size > 12:
         print(f"{workflow_size} Active ingests running. Waiting for ingest queue to go down...")
         sleep(120)
-        workflow_size: int = len(list(workflow.workflow_instances(workflow_state="Active", workflow_type="Ingest")))
+        workflow_size = len(list(workflow.workflow_instances(workflow_state="Active", workflow_type="Ingest")))
 
     if os.path.isdir(folder_name) is False:
         os.mkdir(folder_name)
@@ -246,7 +246,8 @@ if __name__ == '__main__':
             print(f"Network Error.  Re-trying in {error_back_off} secs....")
             sleep(error_back_off)
             error_back_off = error_back_off * 2
-            if error_back_off > 60 * 60:
+            # try for 4 hours
+            if error_back_off > (4 * 60 * 60):
                 print(f"Could Not Resolve Network Error. Exiting.")
                 print(e)
                 exit(1)
