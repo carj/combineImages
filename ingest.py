@@ -189,29 +189,27 @@ if __name__ == '__main__':
                     spreadsheet_rows = spreadsheet_rows + 1
                     dublin_core_data = DC(row)
 
-                    ## look up Title in db.json
                     db_record = Query()
-                    db_results = db.search(db_record.title == dublin_core_data.title)
-                    if len(db_results) > 0:
-                        rec = db_results[0]
-                        print(f"Found Existing Record {rec['title']} in Preservica. Skipping...")
-                        continue
-
-                    # lookup object in Preservica
-                    preservica_records = client.identifier('identifier', dublin_core_data.title)
-                    if len(preservica_records) > 0:
-                        e: Entity = preservica_records.pop()
-                        db.insert({'title': dublin_core_data.title, 'reference': e.reference})
-                        print(f"Found Existing Record {e.title} in Preservica. Skipping...")
-                        continue
-
                     title = dublin_core_data.title
                     metadata_fields = {"xip.parent_hierarchy": source_material_folder, "xip.document_type": "SO",
                                        "xip.title": f'{title}'}
                     hits = list(search.search_index_filter_list(query="%", filter_values=metadata_fields))
                     if len(hits) == 1:
-                        print(f"Processing Item: {title}")
                         record_folder = client.folder(hits[0]['xip.reference'])
+                        dublin_core_data.title = record_folder.title
+                        db_results = db.search(db_record.title == dublin_core_data.title)
+                        if len(db_results) > 0:
+                            rec = db_results[0]
+                            print(f"Found Existing Record {rec['title']} in Preservica. Skipping...")
+                            continue
+                        preservica_records = client.identifier('identifier', record_folder.title)
+                        if len(preservica_records) > 0:
+                            for pr in preservica_records:
+                                e: Entity = pr
+                                db.insert({'title': e.title, 'reference': e.reference})
+                                print(f"Found Existing Record {e.title} in Preservica. Skipping...")
+                            continue
+                        print(f"Processing Item: {title}")
                         main(client, record_folder, dublin_core_data, security_tag)
                     if len(hits) == 0:
                         print(f"Could Not Find Item for {title}")
@@ -221,24 +219,25 @@ if __name__ == '__main__':
                             record_folder = client.folder(h['xip.reference'])
                             print(f"Processing Item: {record_folder.title}")
                             dublin_core_data.title = record_folder.title
-                            db_results = db.search(db_record.title == dublin_core_data.title)
+                            db_results = db.search(db_record.title == record_folder.title)
                             if len(db_results) > 0:
                                 rec = db_results[0]
                                 print(f"Found Existing Record {rec['title']} in Preservica. Skipping...")
                                 continue
-                            preservica_records = client.identifier('identifier', dublin_core_data.title)
+                            preservica_records = client.identifier('identifier', record_folder.title)
                             if len(preservica_records) > 0:
-                                e: Entity = preservica_records.pop()
-                                db.insert({'title': dublin_core_data.title, 'reference': e.reference})
-                                print(f"Found Existing Record {e.title} in Preservica. Skipping...")
+                                for pr in preservica_records:
+                                    e: Entity = pr
+                                    db.insert({'title': e.title, 'reference': e.reference})
+                                    print(f"Found Existing Record {e.title} in Preservica. Skipping...")
                                 continue
                             main(client, record_folder, dublin_core_data, security_tag)
 
             print(f"Script Finished")
-            print(f"Number of folders containing images: {source_records}")
+            print(f"Number of original source folders containing tiff images: {source_records}")
             print(f"Confirmed ingested {len(db)}")
             print(f"Re-start the script again to find any missing ingests")
-            print(f"Items in spreadsheet but no data found ingested {len(db_missing)}")
+            print(f"Items in spreadsheet but no source folders found {len(db_missing)}")
             print(f"Rows in spreadsheet {spreadsheet_rows}")
             exit(1)
 
@@ -251,3 +250,4 @@ if __name__ == '__main__':
                 print(f"Could Not Resolve Network Error. Exiting.")
                 print(e)
                 exit(1)
+
