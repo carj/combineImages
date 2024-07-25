@@ -233,9 +233,12 @@ if __name__ == '__main__':
                                 continue
                             main(client, record_folder, dublin_core_data, security_tag)
 
+
+            metadata_fields = {"xip.parent_ref": parent.reference, "xip.document_type": "IO"}
+            target_records: int = search.search_index_filter_hits(query="%", filter_values=metadata_fields)
             print(f"Script Finished")
             print(f"Number of original source folders containing tiff images: {source_records}")
-            print(f"Confirmed ingested {len(db)}")
+            print(f"Confirmed ingested {target_records}")
             print(f"Re-start the script again to find any missing ingests")
             print(f"Items in spreadsheet but no source folders found {len(db_missing)}")
             print(f"Rows in spreadsheet {spreadsheet_rows}")
