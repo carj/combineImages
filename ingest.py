@@ -233,7 +233,6 @@ if __name__ == '__main__':
                                 continue
                             main(client, record_folder, dublin_core_data, security_tag)
 
-
             metadata_fields = {"xip.parent_ref": parent.reference, "xip.document_type": "IO"}
             target_records: int = search.search_index_filter_hits(query="%", filter_values=metadata_fields)
             print(f"Script Finished")
@@ -253,4 +252,3 @@ if __name__ == '__main__':
                 print(f"Could Not Resolve Network Error. Exiting.")
                 print(e)
                 exit(1)
-
