@@ -48,4 +48,9 @@ if __name__ == '__main__':
         for h in itertools.zip_longest(s, t, fillvalue='*****'):
             a: str = h[0]
             b: str = h[1]
-            writer.writerow([a, source_map[a], b, target_map[b],  a == b])
+            if (a in source_map) and (b in target_map):
+                writer.writerow([a, source_map[a], b, target_map[b],  a == b])
+            if (a not in source_map) and (b in target_map):
+                writer.writerow([a, "", b, target_map[b],  a == b])
+            if (a  in source_map) and (b not in target_map):
+                writer.writerow([a, source_map[a], b, "",  a == b])
