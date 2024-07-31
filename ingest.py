@@ -164,7 +164,7 @@ if __name__ == '__main__':
     assert os.path.isfile(csv_file) is True
     print(f"Found CSV file containing records: {csv_file}")
 
-    POOL_SIZE = 6
+    POOL_SIZE = 3
 
     db_name = os.path.basename(csv_file).replace(".csv", ".json")
 
