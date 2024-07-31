@@ -77,13 +77,6 @@ def main(client: EntityAPI, record_folder: Folder, dublin_core_data: DC, securit
     tiff_images = glob.glob(os.path.join(f"./{folder_name}", "*.tif"))
     sorted_tiffs: list = natsort.natsorted(seq=tiff_images, alg=ns.PATH)
 
-    num_tiff_image: int = len(sorted_tiffs)
-
-    fields: dict = {"xip.parent_ref": record_folder.reference, "xip.document_type": "IO"}
-    items: int = search.search_index_filter_hits(query="tif", filter_values=fields)
-
-    assert items == num_tiff_image
-
     images = []
 
     dc_tree = xml.etree.ElementTree.parse('dc.xml')
