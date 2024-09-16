@@ -77,6 +77,9 @@ def main(client: EntityAPI, record_folder: Folder, dublin_core_data: DC, securit
     tiff_images = glob.glob(os.path.join(f"./{folder_name}", "*.tif"))
     sorted_tiffs: list = natsort.natsorted(seq=tiff_images, alg=ns.PATH)
 
+    if len(tiff_images) == 0:
+        return
+
     images = []
 
     dc_tree = xml.etree.ElementTree.parse('dc.xml')
