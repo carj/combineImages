@@ -212,21 +212,22 @@ if __name__ == '__main__':
                     if len(hits) > 1:
                         for h in hits:
                             record_folder = client.folder(h['xip.reference'])
-                            print(f"Processing Item: {record_folder.title}")
-                            dublin_core_data.title = record_folder.title
-                            db_results = db.search(db_record.title == record_folder.title)
-                            if len(db_results) > 0:
-                                rec = db_results[0]
-                                print(f"Found Existing Record {rec['title']} in Preservica. Skipping...")
-                                continue
-                            preservica_records = client.identifier('identifier', record_folder.title)
-                            if len(preservica_records) > 0:
-                                for pr in preservica_records:
-                                    e: Entity = pr
-                                    db.insert({'title': e.title, 'reference': e.reference})
-                                    print(f"Found Existing Record {e.title} in Preservica. Skipping...")
-                                continue
-                            main(client, record_folder, dublin_core_data, security_tag)
+                            if record_folder.title.startswith(dublin_core_data.title):
+                                print(f"Processing Item: {record_folder.title}")
+                                dublin_core_data.title = record_folder.title
+                                db_results = db.search(db_record.title == record_folder.title)
+                                if len(db_results) > 0:
+                                    rec = db_results[0]
+                                    print(f"Found Existing Record {rec['title']} in Preservica. Skipping...")
+                                    continue
+                                preservica_records = client.identifier('identifier', record_folder.title)
+                                if len(preservica_records) > 0:
+                                    for pr in preservica_records:
+                                        e: Entity = pr
+                                        db.insert({'title': e.title, 'reference': e.reference})
+                                        print(f"Found Existing Record {e.title} in Preservica. Skipping...")
+                                    continue
+                                main(client, record_folder, dublin_core_data, security_tag)
 
             metadata_fields = {"xip.parent_ref": parent.reference, "xip.document_type": "IO"}
             target_records: int = search.search_index_filter_hits(query="%", filter_values=metadata_fields)
