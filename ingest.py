@@ -187,9 +187,8 @@ if __name__ == '__main__':
 
                     db_record = Query()
                     title = dublin_core_data.title
-                    metadata_fields = {"xip.parent_hierarchy": source_material_folder, "xip.document_type": "SO",
-                                       "xip.title": f'{title}'}
-                    hits = list(search.search_index_filter_list(query="%", filter_values=metadata_fields))
+                    metadata_fields = {"xip.parent_hierarchy": source_material_folder, "xip.document_type": "SO"}
+                    hits = list(search.search_index_filter_list(query=f'{title}*', filter_values=metadata_fields))
                     if len(hits) == 1:
                         record_folder = client.folder(hits[0]['xip.reference'])
                         dublin_core_data.title = record_folder.title
