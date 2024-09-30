@@ -184,7 +184,7 @@ if __name__ == '__main__':
                 for row in reader:
                     spreadsheet_rows = spreadsheet_rows + 1
                     dublin_core_data = DC(row)
-
+                    spreadsheet_title = dublin_core_data.title
                     db_record = Query()
                     title = dublin_core_data.title
                     metadata_fields = {"xip.parent_hierarchy": source_material_folder, "xip.document_type": "SO"}
@@ -212,7 +212,7 @@ if __name__ == '__main__':
                     if len(hits) > 1:
                         for h in hits:
                             record_folder = client.folder(h['xip.reference'])
-                            if record_folder.title.startswith(dublin_core_data.title):
+                            if record_folder.title.startswith(spreadsheet_title):
                                 print(f"Processing Item: {record_folder.title}")
                                 dublin_core_data.title = record_folder.title
                                 db_results = db.search(db_record.title == record_folder.title)
