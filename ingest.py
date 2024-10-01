@@ -201,7 +201,7 @@ if __name__ == '__main__':
                         if len(preservica_records) > 0:
                             for pr in preservica_records:
                                 e: Entity = pr
-                                db.insert({'title': e.title, 'reference': e.reference})
+                                db.insert({'title': record_folder.title, 'reference': e.reference})
                                 print(f"Found Existing Record {e.title} in Preservica. Skipping...")
                             continue
                         print(f"Processing Item: {title}")
@@ -224,7 +224,7 @@ if __name__ == '__main__':
                                 if len(preservica_records) > 0:
                                     for pr in preservica_records:
                                         e: Entity = pr
-                                        db.insert({'title': e.title, 'reference': e.reference})
+                                        db.insert({'title': record_folder.title, 'reference': e.reference})
                                         print(f"Found Existing Record {e.title} in Preservica. Skipping...")
                                     continue
                                 main(client, record_folder, dublin_core_data, security_tag)
